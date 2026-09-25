@@ -88,6 +88,28 @@ Para ejecutar el flujo completo con los valores predeterminados:
 ./run.sh all
 ```
 
+## Entidades
+
+El endpoint público de entidades se puede consultar con:
+
+```bash
+./run.sh entidades-all
+```
+
+Este flujo genera:
+
+- `results/entidades_maestro.csv`: conserva todas las columnas devueltas por `https://www.gob.bo/ws/api/publico/entidades`.
+- `results/resumen_entidades.csv`: matriz con una fila por `id_tipo_entidad` e `id_nivel_institucional`, una columna por cada `id_padre` y el número de entidades como valor. Las entidades sin padre se agrupan bajo una columna cuyo encabezado queda vacío.
+
+También puedes ejecutar cada paso por separado:
+
+```bash
+./run.sh entidades-download
+./run.sh entidades-summary
+```
+
+El CSV crudo y el resumen aceptan rutas personalizadas mediante `--output`; el resumen también acepta `--input`.
+
 El lanzador crea `.venv` si no existe, instala las dependencias y ejecuta los scripts con el Python del entorno virtual. También permite indicar otra ubicación mediante `VENV_DIR`:
 
 ```bash

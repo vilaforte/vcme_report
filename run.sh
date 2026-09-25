@@ -7,11 +7,14 @@ VENV_DIR="${VENV_DIR:-$ROOT_DIR/.venv}"
 PYTHON="$VENV_DIR/bin/python"
 
 usage() {
-    printf 'Uso: %s {download|summary|all} [opciones]\n' "$(basename "$0")"
+    printf 'Uso: %s {download|summary|all|entidades-download|entidades-summary|entidades-all} [opciones]\n' "$(basename "$0")"
     printf '\nComandos:\n'
     printf '  download  Descarga el CSV maestro\n'
     printf '  summary   Genera el resumen por entidad\n'
     printf '  all       Ejecuta ambos pasos con las opciones predeterminadas\n'
+    printf '  entidades-download  Descarga el CSV crudo de entidades\n'
+    printf '  entidades-summary   Genera la matriz resumen de entidades\n'
+    printf '  entidades-all       Descarga y resume las entidades\n'
 }
 
 if [[ ! -x "$PYTHON" ]]; then
@@ -40,6 +43,20 @@ case "$command" in
         fi
         "$PYTHON" "$ROOT_DIR/fetch_tramites_maestro.py"
         exec "$PYTHON" "$ROOT_DIR/resumen_tramites_por_entidad.py"
+        ;;
+    entidades-download)
+        exec "$PYTHON" "$ROOT_DIR/fetch_entidades.py" "$@"
+        ;;
+    entidades-summary)
+        exec "$PYTHON" "$ROOT_DIR/resumen_entidades.py" "$@"
+        ;;
+    entidades-all)
+        if [[ $# -gt 0 ]]; then
+            printf 'El comando entidades-all no acepta opciones; usa entidades-download o entidades-summary.\n' >&2
+            exit 2
+        fi
+        "$PYTHON" "$ROOT_DIR/fetch_entidades.py"
+        exec "$PYTHON" "$ROOT_DIR/resumen_entidades.py"
         ;;
     *)
         usage >&2
